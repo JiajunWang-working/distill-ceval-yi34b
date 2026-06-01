@@ -1,0 +1,70 @@
+experiment:
+  name: qwen25_7b_ceval_distill_full_yi34b_noise_u002_bayes
+  seed: 42
+  output_dir: outputs/qwen25_7b_ceval_distill_full_yi34b_noise_u002_bayes
+
+model:
+  student_model_name_or_path: ${STUDENT_MODEL_PATH:-Qwen/Qwen2.5-7B-Instruct}
+  trust_remote_code: true
+  local_files_only: false
+  load_in_4bit: true
+  torch_dtype: bfloat16
+  gradient_checkpointing: true
+
+lora:
+  enabled: true
+  r: 16
+  alpha: 32
+  dropout: 0.05
+  target_modules: ["q_proj", "k_proj", "v_proj", "o_proj", "up_proj", "down_proj", "gate_proj"]
+
+data:
+  train_path: data/processed/ceval_official_full/train.jsonl
+  val_path: data/processed/ceval_official_full/val.jsonl
+  train_teacher_path: data/teacher_cache/ceval_official_full_yi34b/train.teacher.jsonl
+  val_teacher_path: data/teacher_cache/ceval_official_full_yi34b/val.teacher.jsonl
+  max_prompt_length: 1024
+  max_target_length: 256
+  template:
+    system_prefix: "你是一个严谨的中文选择题助手。"
+    instruction: "请阅读题目并完成推理。"
+    response_format_instruction: "请先给出简明解析过程，最后一行使用“最终答案：<选项>”作答。"
+    response_prefix: "请作答："
+    final_answer_prefix: "最终答案："
+    rationale_prefix: "解析："
+
+distillation:
+  enabled: true
+  method: bayes
+  alpha: 0.6644
+  temperature: 1.8778
+  bayes_eps: 1.0e-6
+  bayes_scale_min: 1.0e-3
+  option_labels: ["A", "B", "C", "D", "E", "F"]
+
+noise:
+  enabled: true
+  target_module: model.norm
+  distribution: uniform
+  scale: 0.02
+
+training:
+  per_device_train_batch_size: 1
+  per_device_eval_batch_size: 1
+  gradient_accumulation_steps: 8
+  learning_rate: 2.0e-4
+  num_train_epochs: 3
+  weight_decay: 0.0
+  warmup_ratio: 0.03
+  logging_steps: 5
+  save_steps: 25
+  eval_steps: 25
+  save_total_limit: 2
+  max_grad_norm: 1.0
+  report_to: []
+  bf16: true
+  fp16: false
+
+evaluation:
+  batch_size: 8
+  save_predictions: true

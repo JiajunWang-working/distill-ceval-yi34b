@@ -1,0 +1,2 @@
+-r requirements-core.txt
+bitsandbytes>=0.43.3; platform_system == "Linux"

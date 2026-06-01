@@ -1,0 +1,40 @@
+experiment:
+  name: qwen25_7b_ceval_benchmark_plain_full
+  seed: 42
+  output_dir: outputs/qwen25_7b_ceval_benchmark_plain_full
+
+model:
+  student_model_name_or_path: ${STUDENT_MODEL_PATH:-Qwen/Qwen2.5-7B-Instruct}
+  trust_remote_code: true
+  local_files_only: false
+  load_in_4bit: true
+  torch_dtype: bfloat16
+
+distillation:
+  enabled: false
+  alpha: 0.0
+  temperature: 1.0
+  option_labels: ["A", "B", "C", "D", "E", "F"]
+
+data:
+  train_path: data/processed/ceval_official_full/train.jsonl
+  val_path: data/processed/ceval_official_full/val.jsonl
+  train_teacher_path: data/teacher_cache/ceval_official_full_yi34b/train.teacher.jsonl
+  val_teacher_path: data/teacher_cache/ceval_official_full_yi34b/val.teacher.jsonl
+  max_prompt_length: 2048
+  max_target_length: 16
+  template:
+    prompt_mode: "plain"
+    benchmark_subject_mapping_path: data/ceval_subject_mapping.json
+    benchmark_system_prefix: "以下是中国关于{subject_name_zh}考试的单项选择题，请选出其中的正确答案。"
+    benchmark_instruction: "你只需要输出正确答案的选项字母。"
+    benchmark_answer_prefix: "答案："
+    benchmark_few_shot_seed: 42
+    benchmark_use_subject_ordered_few_shot: true
+    benchmark_example_with_answer_format: "题目：{question}\nA. {A}\nB. {B}\nC. {C}\nD. {D}\n答案：{answer}"
+    benchmark_example_without_answer_format: "题目：{question}\nA. {A}\nB. {B}\nC. {C}\nD. {D}\n答案："
+
+evaluation:
+  batch_size: 8
+  max_new_tokens: 4
+  save_predictions: true

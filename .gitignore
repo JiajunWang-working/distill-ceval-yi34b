@@ -1,0 +1,40 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+.mypy_cache/
+
+# Environments
+.venv/
+venv/
+env/
+
+# Training and evaluation outputs
+outputs/
+run_logs/
+logs/
+
+# Model checkpoints and adapters
+checkpoints/
+final/
+*.bin
+*.safetensors
+*.pt
+*.pth
+adapter_model.safetensors
+adapter_model.bin
+optimizer.pt
+scheduler.pt
+trainer_state.json
+
+# Hugging Face and model cache
+.cache/
+hf_cache/
+huggingface/
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/

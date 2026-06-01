@@ -327,13 +327,3 @@ This release includes the core experiment writeups:
 1. `docs/experiment_result_yi34b_noise_ceval_20260527.md`
 2. `docs/experiment_result_sabo_yi34b_noise_ceval_20260527.md`
 3. `docs/experiment_result_ptq_ceval_20260601.md`
-
-## 13. Notes for GitHub Upload
-
-Before pushing:
-
-1. double-check that no `outputs/` directory exists in this release folder
-2. double-check that no Hugging Face cache or model snapshots were copied here
-3. optionally set `TEACHER_MODEL_PATH` and `STUDENT_MODEL_PATH` for local model directories
-
-This release folder is intentionally lightweight so it can be uploaded directly without large-model files.
